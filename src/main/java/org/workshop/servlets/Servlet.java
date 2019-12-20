@@ -1,4 +1,4 @@
-package org.workshop;
+package org.workshop.servlets;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
