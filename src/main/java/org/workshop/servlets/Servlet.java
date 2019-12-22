@@ -1,11 +1,15 @@
 package org.workshop.servlets;
 
+import org.workshop.dao.CustomerDao;
+import org.workshop.models.Customer;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
 
 @WebServlet("")
 public class Servlet extends HttpServlet {
@@ -14,6 +18,6 @@ public class Servlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("test");
+        getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }
