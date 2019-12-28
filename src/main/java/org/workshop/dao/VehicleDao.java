@@ -20,6 +20,8 @@ public class VehicleDao {
             "SELECT id, model, make, dop, lic, next_service, customer_id FROM vehicles";
     private static final String ADD_CUSTOMER_TO_VEHICLE =
             "UPDATE vehicles SET customer_id=? WHERE id =?;";
+    private static final String FIND_ALL_VEHICLES_BY_CUSTOMER_QUERY =
+            "SELECT id, model, make, dop, lic, next_service, customer_id FROM vehicles WHERE customer_id = ?";
 
     public void addCustomerToVehicle(Customer customer, Vehicle vehicle) {
         try (Connection conn = DbUtil.getConn();
@@ -110,6 +112,31 @@ public class VehicleDao {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public Vehicle[] findAllByCustomer(int customerId) {
+        try (Connection conn = DbUtil.getConn();
+             PreparedStatement statement = conn.prepareStatement(FIND_ALL_VEHICLES_BY_CUSTOMER_QUERY)) {
+            statement.setInt(1, customerId);
+            Vehicle[] vehicles = new Vehicle[0];
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Vehicle vehicle = new Vehicle();
+                vehicle.setId(rs.getInt("id"));
+                vehicle.setModel(rs.getString("model"));
+                vehicle.setMake(rs.getString("make"));
+                vehicle.setDop(rs.getDate("dop"));
+                vehicle.setLic(rs.getString("lic"));
+                vehicle.setNext_service(rs.getDate("next_service"));
+                vehicle.setCustomer_id(rs.getInt("customer_id"));
+
+                vehicles = addToArray(vehicle, vehicles);
+            }
+            return vehicles;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

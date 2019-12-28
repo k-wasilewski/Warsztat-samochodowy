@@ -17,6 +17,24 @@ public class Order {
     private int cost_parts;
     private int cost_h;
     private int h;
+    private Date end;
+    private int income;
+
+    public int getIncome() {
+        return income;
+    }
+
+    public void setIncome(int income) {
+        this.income = income;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
 
     public Order() {}
 

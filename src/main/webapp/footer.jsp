@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,28 +16,28 @@
 
 </head>
 <body>
-<footer id="footer" class="footer-section pt-3 pb-3">
-<div class="container-fluid">
+<footer id="footer" class="footer-section pt-3 pb-3"  style="width: 100%;">
+
     <div class="row">
         <div class="col-md-6">
-            <h4>
+            <h5>
                 Warsztat samochodowy, 2019
-            </h4>
+            </h5>
         </div>
         <div class="col-md-3">
         </div>
         <div class="col-md-3">
-            <h4>
+            <h5>
                 Kuba Wasilewski
-            </h4>
+            </h5>
             <p>
-                <a href="https://github.com/k-wasilewski"><h5 class="text-light">@k-wasilewski</h5></a>
-
-                <a href="mailto:k.k.wasilewski@gmail.com"><h5 class="text-light">k.k.wasilewski@gmail.com</h5></a>
+                <a href="https://github.com/k-wasilewski"><h8 class="text-primary">@k-wasilewski</h8></a>
+                <br>
+                <a href="mailto:k.k.wasilewski@gmail.com"><h8 class="text-primary">k.k.wasilewski@gmail.com</h8></a>
             </p>
         </div>
     </div>
-</div>
+
 </footer>
 </body>
 </html>

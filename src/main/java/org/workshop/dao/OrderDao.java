@@ -10,21 +10,89 @@ import java.util.Arrays;
 public class OrderDao {
     private static final String CREATE_ORDER_QUERY =
             "INSERT INTO orders(created, plan_start, actual_start, employee_id, description_problem, description_repair, " +
-                    "status_id, vehicle_id, price_customer, cost_parts, cost_h, h) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "status_id, vehicle_id, price_customer, cost_parts, cost_h, h, end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String READ_ORDER_QUERY =
             "SELECT id, created, plan_start, actual_start, employee_id, description_problem, description_repair, " +
-                    "status_id, vehicle_id, price_customer, cost_parts, cost_h, h FROM orders WHERE id = ?";
+                    "status_id, vehicle_id, price_customer, cost_parts, cost_h, h, end FROM orders WHERE id = ?";
     private static final String UPDATE_ORDER_QUERY =
             "UPDATE orders SET plan_start = ?, actual_start = ?, employee_id = ?, description_problem = ?, " +
                     "description_repair = ?, status_id = ?, vehicle_id = ?, price_customer = ?, cost_parts = ?, " +
-                    "cost_h = ?, h = ? WHERE id = ?";
+                    "cost_h = ?, h = ?, end = ? WHERE id = ?";
     private static final String DELETE_ORDER_QUERY =
             "DELETE FROM orders WHERE id = ?";
     private static final String FIND_ALL_ORDERS_QUERY =
             "SELECT id, created, plan_start, actual_start, employee_id, description_problem, description_repair," +
-                    "status_id, vehicle_id, price_customer, cost_parts, cost_h, h FROM orders";
+                    "status_id, vehicle_id, price_customer, cost_parts, cost_h, h, end FROM orders";
+    private static final String FIND_ALL_ORDERS_DESC_QUERY =
+            "SELECT id, created, plan_start, actual_start, employee_id, description_problem, description_repair," +
+                    "status_id, vehicle_id, price_customer, cost_parts, cost_h, h, end FROM orders ORDER BY created DESC";
     private static final String FIND_ALL_ORDERS_BY_EMPLOYEE_QUERY =
             "SELECT * FROM orders WHERE employee_id = ?;";
+    private static final String FIND_ALL_ORDERS_BY_VEHICLE_QUERY =
+            "SELECT * FROM orders WHERE vehicle_id = ?;";
+
+    public Order[] findAllDesc() {
+        try (Connection conn = DbUtil.getConn();
+             PreparedStatement statement = conn.prepareStatement(FIND_ALL_ORDERS_DESC_QUERY);) {
+            Order[] orders = new Order[0];
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setCreated(rs.getDate("created"));
+                order.setPlan_start(rs.getDate("plan_start"));
+                order.setActual_start(rs.getDate("actual_start"));
+                order.setEmployee_id(rs.getInt("employee_id"));
+                order.setDescription_problem(rs.getString("description_problem"));
+                order.setDescription_repair(rs.getString("description_repair"));
+                order.setStatus_id(rs.getInt("status_id"));
+                order.setVehicle_id(rs.getInt("vehicle_id"));
+                order.setPrice_customer(rs.getInt("price_customer"));
+                order.setCost_parts(rs.getInt("cost_parts"));
+                order.setCost_h(rs.getInt("cost_h"));
+                order.setH(rs.getInt("h"));
+                order.setEnd(rs.getDate("end"));
+
+                orders = addToArray(order, orders);
+            }
+            return orders;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Order[] findAllByVehicle(int vehicleId) {
+        try (Connection conn = DbUtil.getConn();
+             PreparedStatement statement = conn.prepareStatement(FIND_ALL_ORDERS_BY_VEHICLE_QUERY);) {
+            Order[] orders = new Order[0];
+            statement.setInt(1, vehicleId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setCreated(rs.getDate("created"));
+                order.setPlan_start(rs.getDate("plan_start"));
+                order.setActual_start(rs.getDate("actual_start"));
+                order.setEmployee_id(rs.getInt("employee_id"));
+                order.setDescription_problem(rs.getString("description_problem"));
+                order.setDescription_repair(rs.getString("description_repair"));
+                order.setStatus_id(rs.getInt("status_id"));
+                order.setVehicle_id(rs.getInt("vehicle_id"));
+                order.setPrice_customer(rs.getInt("price_customer"));
+                order.setCost_parts(rs.getInt("cost_parts"));
+                order.setCost_h(rs.getInt("cost_h"));
+                order.setH(rs.getInt("h"));
+                order.setEnd(rs.getDate("end"));
+
+                orders = addToArray(order, orders);
+            }
+            return orders;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public Order[] findAllByEmployee(int employeeId) {
         try (Connection conn = DbUtil.getConn();
@@ -47,6 +115,7 @@ public class OrderDao {
                 order.setCost_parts(rs.getInt("cost_parts"));
                 order.setCost_h(rs.getInt("cost_h"));
                 order.setH(rs.getInt("h"));
+                order.setEnd(rs.getDate("end"));
 
                 orders = addToArray(order, orders);
             }
@@ -68,12 +137,13 @@ public class OrderDao {
             ps.setInt(4, order.getEmployee_id());
             ps.setString(5, order.getDescription_problem());
             ps.setString(6, order.getDescription_repair());
-            ps.setInt(7, order.getStatus_id());
+            ps.setInt(7, 1);
             ps.setInt(8, order.getVehicle_id());
             ps.setInt(9, order.getPrice_customer());
             ps.setInt(10, order.getCost_parts());
             ps.setInt(11, edao.read(order.getEmployee_id()).getPay_h());
             ps.setInt(12, order.getH());
+            ps.setDate(13, order.getEnd());
 
             ps.executeUpdate();
 
@@ -113,6 +183,7 @@ public class OrderDao {
                 order.setCost_parts(rs.getInt("cost_parts"));
                 order.setCost_h(rs.getInt("cost_h"));
                 order.setH(rs.getInt("h"));
+                order.setEnd(rs.getDate("end"));
 
                 return order;
             }
@@ -138,7 +209,8 @@ public class OrderDao {
             statement.setInt(9, order.getCost_parts());
             statement.setInt(10, order.getCost_h());
             statement.setInt(11, order.getH());
-            statement.setInt(12, order.getId());
+            statement.setDate(12, order.getEnd());
+            statement.setInt(13, order.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -175,6 +247,7 @@ public class OrderDao {
                 order.setCost_parts(rs.getInt("cost_parts"));
                 order.setCost_h(rs.getInt("cost_h"));
                 order.setH(rs.getInt("h"));
+                order.setEnd(rs.getDate("end"));
 
                 orders = addToArray(order, orders);
             }

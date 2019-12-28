@@ -25,6 +25,11 @@ section {
   display: block;
 }
 
+.footer {
+  position: fixed;
+  bottom: 0;
+}
+
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
@@ -5884,7 +5889,7 @@ button.close {
 
 .carousel-item-next,
 .carousel-item-prev {
-  position: absolute;
+  position: relative;
   top: 0;
 }
 
@@ -5926,7 +5931,7 @@ button.close {
 
 .carousel-control-prev,
 .carousel-control-next {
-  position: absolute;
+  position: relative;
   top: 0;
   bottom: 0;
   display: -webkit-box;

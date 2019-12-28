@@ -3,6 +3,7 @@ package org.workshop.dao;
 import org.workshop.models.Customer;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CustomerDao {
@@ -16,6 +17,32 @@ public class CustomerDao {
             "DELETE FROM customers WHERE id = ?";
     private static final String FIND_ALL_CUSTOMERS_QUERY =
             "SELECT id, first_name, last_name, dob FROM customers";
+    private static final String FIND_ALL_CUSTOMERS_BY_NAME_QUERY =
+            "SELECT * FROM customers WHERE first_name LIKE ? OR last_name LIKE ?";
+
+    public Customer[] findCustomersByName(String search) {
+        try (Connection conn = DbUtil.getConn();
+             PreparedStatement statement = conn.prepareStatement(FIND_ALL_CUSTOMERS_BY_NAME_QUERY);) {
+            Customer[] customers = new Customer[0];
+            statement.setString(1, '%' + search + '%');
+            statement.setString(2, '%' + search + '%');
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Customer customer = new Customer();
+                customer.setId(resultSet.getInt("id"));
+                customer.setFirst_name(resultSet.getString("first_name"));
+                customer.setLast_name(resultSet.getString("last_name"));
+                customer.setDob(resultSet.getDate("dob"));
+
+                customers = addToArray(customer, customers);
+            }
+            return customers;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
     public Customer create(Customer customer) {
         try (Connection conn = DbUtil.getConn();
