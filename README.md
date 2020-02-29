@@ -29,6 +29,6 @@ You can view the list of currently serviced vehicles.
 ![alt-text](https://raw.githubusercontent.com/k-wasilewski/ScrumLab/master/screenshots/raport1.png)
 You can view the report of employees working hours for a given period of time.
 
-#### 2 - Income report
+#### 7 - Income report
 ![alt-text](https://github.com/k-wasilewski/ScrumLab/blob/master/screenshots/raport2.png)
 You can view the report of workshop's income for a given period of time.
